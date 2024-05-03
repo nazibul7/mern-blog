@@ -5,7 +5,7 @@ import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js"
 
 dotenv.config()
-mongoose.connect(process.env.MONFODB_URI+'/mern-blog')
+mongoose.connect(process.env.MONFODB_URI + '/mern-blog')
     .then(() => {
         console.log('MongoDB is connected');
     })
@@ -21,5 +21,15 @@ app.listen(3000, () => {
 })
 
 app.use(express.json())
-app.use("/api/user",userRoutes)
-app.use('/api/auth',authRoutes)
+app.use("/api/user", userRoutes)
+app.use('/api/auth', authRoutes)
+
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500
+    const message = err.message || "Something went wrong"
+    res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message
+    })
+})
