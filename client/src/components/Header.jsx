@@ -11,13 +11,7 @@ const Header = () => {
     const dispatch = useDispatch()
     const {currentUser} = useSelector(state => state.user)
     const { theme } = useSelector(state => state.theme)
-    if (currentUser) {
-        console.log(true);
-    }
-    else {
-        console.log(false);
-    }
-    const x = currentUser?.user?.currentUser?.rest
+    const x = currentUser?.rest
     return (
         <Navbar className='border-b-2'>
             <Link to={'/'} className='self-center whitespace-nowrap text-sm sm:text-xl
