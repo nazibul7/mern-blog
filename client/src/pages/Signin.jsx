@@ -10,7 +10,7 @@ const Signin = () => {
   const dispatch = useDispatch()
   const [formData, setFormData] = useState({})
   const { loading, error: errorMessage,currentUser } = useSelector(state => state.user)
-  console.log(loading,errorMessage,currentUser);
+  // console.log(loading,errorMessage,currentUser);
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.id]: event.target.value.trim() })
   }
