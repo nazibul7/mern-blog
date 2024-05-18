@@ -11,8 +11,8 @@ export const updateUser = async (req, res, next) => {
         return next(errorHandler(403, 'You are not allowed to update user'))
     }
     const { password, username, email, profilePicture } = req.body
-    if(!username && !password && !email && !profilePicture){
-        return next(errorHandler(400,"No valid fields to update"))
+    if (!username && !password && !email && !profilePicture) {
+        return next(errorHandler(400, "No valid fields to update"))
     }
     if (password) {
         if (req.body.password.length < 6) {
@@ -48,6 +48,19 @@ export const updateUser = async (req, res, next) => {
         res.status(200).json(updatedUser)
     } catch (error) {
         return next(error)
+    }
+}
+
+export const deleteUser = async (req, res, next) => {
+    if (req.user.userId != req.params.userId) {
+        return next(errorHandler(403, 'You are not allowed to update user'))
+    }
+    try {
+        const deleteUser = await User.findByIdAndDelete(req.params.userId)
+        console.log(deleteUser);
+        res.status(200).json("User has been deleted")
+    } catch (error) {
+        next(error)
     }
 }
 
