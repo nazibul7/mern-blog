@@ -12,7 +12,6 @@ const Header = () => {
     const {currentUser} = useSelector(state => state.user)
     console.log(currentUser);
     const { theme } = useSelector(state => state.theme)
-    const x = currentUser?.rest
     return (
         <Navbar className='border-b-2'>
             <Link to={'/'} className='self-center whitespace-nowrap text-sm sm:text-xl
@@ -38,8 +37,8 @@ const Header = () => {
                     (
                         <Dropdown arrowIcon={false} inline label={<Avatar alt='user' img={currentUser.profilePicture} rounded />}>
                             <Dropdown.Header>
-                                <span className='block text-sm'>@{x?.username || currentUser.username}</span>
-                                <span className='block text-sm font-medium truncate'>{x?.email || currentUser.email}</span>
+                                <span className='block text-sm'>@{currentUser.username}</span>
+                                <span className='block text-sm font-medium truncate'>{currentUser.email}</span>
                             </Dropdown.Header>
                             <Link to={'/dashboard?tab=profile'}>
                                 <Dropdown.Item>Profile</Dropdown.Item>
