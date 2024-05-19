@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Alert, Button, Modal, TextInput } from "flowbite-react"
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import { app } from '../firebase'
-import { deletUserStart, deleteUserFailure, deleteUserSuccess, updateFailure, updateStart, updateSuccess } from '../redux/features/userSlice'
+import { deletUserStart, deleteUserFailure, deleteUserSuccess, signOutSuccess, updateFailure, updateStart, updateSuccess } from '../redux/features/userSlice'
 import { HiOutlineExclamationCircle } from "react-icons/hi"
 
 const DashProfile = () => {
@@ -95,22 +95,38 @@ const DashProfile = () => {
             }
         )
     }
-    const handleDeleteUser = async() => { 
+    const handleDeleteUser = async () => {
         setShowModal(false)
         try {
             dispatch(deletUserStart())
-            const res=await fetch(`/api/user/delete/${currentUser._id}`,{
-                method:"DELETE"
+            const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+                method: "DELETE"
             })
-            const data=await res.json()
-            if(!res.ok){
+            const data = await res.json()
+            if (!res.ok) {
                 dispatch(deleteUserFailure(data.message))
             }
-            else{
+            else {
                 dispatch(deleteUserSuccess(data))
             }
         } catch (error) {
             dispatch(deleteUserFailure(error.message))
+        }
+    }
+    const handleSignOut = async () => {
+        try {
+            const res = await fetch(`/api/user/signout`, {
+                method: 'POST'
+            })
+            const data = await res.json()
+            if (!res.ok) {
+                console.log(data.message)
+            }
+            else {
+                dispatch(signOutSuccess(data))
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
     return (
@@ -130,7 +146,7 @@ const DashProfile = () => {
             </form>
             <div className='w-96 mt-3 flex justify-between text-red-500 gap-10'>
                 <span onClick={() => { setShowModal(true) }} className='cursor-pointer'>Delete Account</span>
-                <span className='cursor-pointer'>Sign Out</span>
+                <span onClick={handleSignOut} className='cursor-pointer'>Sign Out</span>
             </div>
             {updateUserSuccess && (<Alert color={'success'} className='mt-3'>
                 {updateUserSuccess}
