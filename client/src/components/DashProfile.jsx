@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from 'react-redux'
 import { Alert, Button, Modal, TextInput } from "flowbite-react"
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
@@ -7,7 +8,8 @@ import { deletUserStart, deleteUserFailure, deleteUserSuccess, signOutSuccess, u
 import { HiOutlineExclamationCircle } from "react-icons/hi"
 
 const DashProfile = () => {
-    const { currentUser } = useSelector(state => state.user)
+    const { currentUser, error: errorMessage, loading } = useSelector(state => state.user)
+    console.log(currentUser);
     const [imageFile, setImageFile] = useState(null)
     const [imageFileUrl, setImageFileUrl] = useState(null)
     const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null)
@@ -17,7 +19,6 @@ const DashProfile = () => {
     const [updateUserError, setUpdateUserError] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const dispatch = useDispatch()
-    const { error: errorMessage } = useSelector(state => state.user)
     const handleImageChange = (e) => {
         const file = e.target.files[0]
         if (file) {
@@ -26,10 +27,9 @@ const DashProfile = () => {
         }
     }
     const handleSubmit = async (event) => {
-        dispatch(updateStart())
+        event.preventDefault()
         setUpdateUserError(false)
         setUpdateUserSuccess(false)
-        event.preventDefault()
         if (Object.keys(formData).length == 0) {
             setUpdateUserError('No changes to be updated')
             return
@@ -63,7 +63,6 @@ const DashProfile = () => {
         }
     }, [imageFile])
     const handleChange = (event) => {
-        dispatch(updateStart())
         setUpdateUserError(false)
         setUpdateUserSuccess(false)
         setFormData({ ...formData, [event.target.id]: event.target.value })
@@ -140,9 +139,16 @@ const DashProfile = () => {
                 <TextInput onChange={handleChange} className='w-full' type='text' id='username' placeholder='username' defaultValue={currentUser.username} />
                 <TextInput onChange={handleChange} className='w-full' type='email' id='email' placeholder='email' defaultValue={currentUser.email} />
                 <TextInput onChange={handleChange} className='w-full' type='password' id='password' placeholder='password' />
-                <Button type='submit' className='w-full' gradientDuoTone={'purpleToBlue'} outline>
-                    Update
+                <Button disabled={loading} type='submit' className='w-full' gradientDuoTone={'purpleToBlue'} outline>
+                    {loading ? 'Loading...' : 'Update'}
                 </Button>
+                {currentUser.isAdmin && (
+                    <Link to='/create-post' className='w-full'>
+                        <Button type='button' gradientDuoTone={'purpleToBlue'} className='w-full'>
+                            Create a post
+                        </Button>
+                    </Link>
+                )}
             </form>
             <div className='w-96 mt-3 flex justify-between text-red-500 gap-10'>
                 <span onClick={() => { setShowModal(true) }} className='cursor-pointer'>Delete Account</span>
