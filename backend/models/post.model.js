@@ -26,7 +26,7 @@ const postSchema = new mongoose.Schema({
         required: true,
         unique: true
     }
-}, { timeseries: true })
+}, { timestamps: true })
 
 const Post = mongoose.model('Post', postSchema)
 export {Post}
