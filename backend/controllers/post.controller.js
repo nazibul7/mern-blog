@@ -25,7 +25,7 @@ export const creatPost = async (req, res, next) => {
 export const getposts = async (req, res, next) => {
     try {
         const startIndex = parseInt(req.query.startIndex) || 0
-        const limit = parseInt(req.query.limit) || 9
+        const limit = parseInt(req.query.limit) || 5
         const sortDirection = req.query.order == 'asc' ? 1 : -1
         const queryObj = {
             ...(req.query.userId && { userId: req.query.userId }),

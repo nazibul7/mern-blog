@@ -6,11 +6,8 @@ import { Link } from 'react-router-dom'
 const DashPosts = () => {
   const { currentUser } = useSelector((state) => state.user)
   const [userPosts, setUserPosts] = useState([])
-  console.log(userPosts);
-  userPosts.map((data) => {
-    console.log(data);
-    <p>data</p>
-  })
+  const [showMore, setShowMore] = useState(true)
+
   useEffect(() => {
     if (currentUser?.isAdmin) {
       fetchPosts()
@@ -23,9 +20,24 @@ const DashPosts = () => {
       if (res.ok) {
         setUserPosts(data.post)
       }
-      console.log(data);
+      if (data.post.length < 5) {
+        setShowMore(false)
+      }
     } catch (error) {
       console.log(error.message);
+    }
+  }
+  const handleShowMore = async () => {
+    const startIndex = userPosts.length
+    try {
+      const res = await fetch(`/api/post/getposts?userId=${currentUser?._id}&startIndex=${startIndex}`)
+      const data = await res.json()
+      setUserPosts((prev) => [...prev, ...data.post])
+      if (data.post.length < 5) {
+        setShowMore(false)
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
   return (
@@ -44,7 +56,7 @@ const DashPosts = () => {
               </Table.Head>
               {userPosts.map((post) => {
                 return <Table.Body key={post._id} className='divide-y'>
-                  <Table.Row  className='bg-white dark:border-gray-700 dark:bg-gray-800'>
+                  <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
                     <Table.Cell >{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
                     <Table.Cell>
                       <Link>
@@ -66,6 +78,11 @@ const DashPosts = () => {
                 </Table.Body>
               })}
             </Table>
+            {showMore && (
+              <button onClick={handleShowMore} className='w-full text-teal-500 mx-auto py-4 text-sm'>
+                Show more
+              </button>
+            )}
           </>
         ) :
           (<p>You have no post yet!</p>)}
