@@ -23,7 +23,7 @@ const DashPosts = () => {
       if (res.ok) {
         setUserPosts(data.post)
       }
-      if (data.post.length < 5) {
+      if (data.post.length <= 5) {
         setShowMore(false)
       }
     } catch (error) {
@@ -59,7 +59,7 @@ const DashPosts = () => {
         )
       }
     } catch (error) {
-
+      console.log(error);
     }
   }
   return (
