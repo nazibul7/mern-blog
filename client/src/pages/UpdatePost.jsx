@@ -14,9 +14,10 @@ const UpdatePost = () => {
     const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null)
     const [imageFileUploadError, setImageFileUploadError] = useState(null)
     const [formData, setFormData] = useState({})
-    console.log(formData._id);
+    const [originalData, setOriginalData] = useState({})
+    // console.log(formData._id);
     const [publishError, setPublishError] = useState(null)
-    const quillRef=useRef(null)
+    const quillRef = useRef(null)
     const { postId } = useParams()
     useEffect(() => {
         const fetchPost = async () => {
@@ -28,11 +29,11 @@ const UpdatePost = () => {
                 }
                 if (res.ok) {
                     setPublishError(null)
-                    console.log(data.post[0]._id);
                     setFormData(data.post[0])
+                    setOriginalData(data.post[0])
                 }
             }
-            
+
             catch (error) {
                 console.log(error);
             }
@@ -41,9 +42,9 @@ const UpdatePost = () => {
     }, [postId])
     const navigate = useNavigate()
     const handleInputChange = (event) => {
+        setPublishError(null)
         setFormData({ ...formData, [event.target.id]: event.target.value })
     }
-    console.log(formData);
     const handleUploadImage = async (event) => {
         event.preventDefault()
         try {
@@ -80,6 +81,12 @@ const UpdatePost = () => {
     }
     const handleSubmit = async (event) => {
         event.preventDefault()
+        setPublishError(null)
+        const updated = Object.keys(formData).some(key=>{return formData[key]!=originalData[key]})
+        console.log(updated);
+        if(!updated){
+            return setPublishError("No changes detected")
+        }
         try {
             const res = await fetch(`/api/post/updatepost/${formData._id}/${currentUser._id}`, {
                 method: "PUT",
@@ -90,13 +97,10 @@ const UpdatePost = () => {
             })
             const data = await res.json()
             if (!res.ok) {
-                console.log(data);
-                console.log(data.message);
                 setPublishError(data.message)
             }
             if (res.ok) {
                 setPublishError(null)
-                // setFormData({})
                 navigate(`/post/${data.slug}`)
             }
         } catch (error) {
