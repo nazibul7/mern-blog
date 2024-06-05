@@ -57,7 +57,7 @@ export const getposts = async (req, res, next) => {
 }
 
 export const deletePost = async (req, res, next) => {
-    if (!req.user.isAdmin || req.user.id != req.params.userId) {
+    if (!req.user.isAdmin && req.user.userId != req.params.userId) {
         return next(errorHandler(403, "You are not allowed to delete this post"))
     }
     try {
@@ -69,7 +69,7 @@ export const deletePost = async (req, res, next) => {
 }
 
 export const updatePost = async (req, res, next) => {
-    if (!req.user.isAdmin || req.user.userId != req.params.userId) {
+    if (!req.user.isAdmin && req.user.userId != req.params.userId) {
         return next(errorHandler(403, "You are not allowed to update the post"))
     }
     try {
