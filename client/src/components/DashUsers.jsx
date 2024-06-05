@@ -10,7 +10,8 @@ const DashUsers = () => {
   const [showMore, setShowMore] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [userIdToDelete, setUserIdToDelete] = useState('')
-
+console.log(userIdToDelete);
+console.log(users);
   useEffect(() => {
     if (currentUser?.isAdmin) {
       fetchusers()
@@ -20,7 +21,6 @@ const DashUsers = () => {
     try {
       const res = await fetch(`/api/user/getusers`)
       const data = await res.json()
-      console.log(data);
       if (res.ok) {
         setUsers(data.users)
       }
@@ -47,7 +47,7 @@ const DashUsers = () => {
   const handleDeleteuser = async () => {
     setShowModal(false)
     try {
-      const req = await fetch(`/api/user/deleteuser/${userIdToDelete}/${currentUser._id}`, {
+      const req = await fetch(`/api/user/delete/${userIdToDelete}`, {
         method: "DELETE"
       })
       const data = await req.json()
