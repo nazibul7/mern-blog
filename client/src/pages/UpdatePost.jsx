@@ -9,13 +9,12 @@ import { useSelector } from "react-redux"
 
 const UpdatePost = () => {
     const { currentUser } = useSelector(state => state.user)
-    console.log(currentUser._id);
     const [file, setFile] = useState(null)
     const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null)
     const [imageFileUploadError, setImageFileUploadError] = useState(null)
     const [formData, setFormData] = useState({})
+    const [x,setX]=useState({})
     const [originalData, setOriginalData] = useState({})
-    // console.log(formData._id);
     const [publishError, setPublishError] = useState(null)
     const quillRef = useRef(null)
     const { postId } = useParams()
@@ -24,6 +23,8 @@ const UpdatePost = () => {
             try {
                 const res = await fetch(`/api/post/getposts?postId=${postId}`)
                 const data = await res.json()
+                setFormData(data.post[0])
+                setX(data.post[0])
                 if (!res.ok) {
                     setPublishError(data.message)
                 }
@@ -88,7 +89,9 @@ const UpdatePost = () => {
             return setPublishError("No changes detected")
         }
         try {
-            const res = await fetch(`/api/post/updatepost/${formData._id}/${currentUser._id}`, {
+            console.log(formData);
+            console.log(formData._id);
+            const res = await fetch(`/api/post/updatepost/${x._id}/${currentUser._id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
@@ -98,6 +101,7 @@ const UpdatePost = () => {
             const data = await res.json()
             if (!res.ok) {
                 setPublishError(data.message)
+                return
             }
             if (res.ok) {
                 setPublishError(null)
@@ -113,8 +117,8 @@ const UpdatePost = () => {
             <h1 className='text-center text-3xl my-5 font-semibold'>Update post</h1>
             <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
                 <div className='flex flex-col gap-4 sm:flex-row'>
-                    <TextInput value={formData.title} onChange={handleInputChange} className='flex-1 ' type='text' placeholder='Title' required id='title' />
-                    <Select value={formData.category} onChange={handleInputChange} id='category'>
+                    <TextInput value={formData?.title} onChange={handleInputChange} className='flex-1 ' type='text' placeholder='Title' required id='title' />
+                    <Select value={formData?.category} onChange={handleInputChange} id='category'>
                         <option value={'uncategorized'}>Select a category</option>
                         <option value={'javascript'}>JavaScript</option>
                         <option value={'typescript'}>TypeScript</option>
@@ -134,7 +138,7 @@ const UpdatePost = () => {
                 {formData.image && (
                     <img src={formData.image} alt='upload' className='w-full h-60 mb-12 object-cover' />
                 )}
-                <ReactQuill ref={quillRef} value={formData.content} onChange={(value) => setFormData({ ...formData, content: value })} theme='snow' placeholder='Write something...' className='h-72 mb-12' required />
+                <ReactQuill ref={quillRef} value={formData?.content} onChange={(value) => setFormData({ ...formData, content: value })} theme='snow' placeholder='Write something...' className='h-72 mb-12' required />
                 <Button type='submit' gradientDuoTone={'purpleToPink'}>Update</Button>
                 {
                     publishError && <Alert className='mt-3' color={'failure'}>{publishError}</Alert>
