@@ -32,3 +32,36 @@ export const getPostComments = async (req, res, next) => {
         next(error)
     }
 }
+
+export const likeComment = async (req, res, next) => {
+    const { commentId } = req.params
+    try {
+        const likeComment = await Comment.findById(commentId)
+        if (!likeComment) {
+            return next(errorHandler(404, "Comment not found"))
+        }
+        const userIndex = likeComment.likes.indexOf(req.user.userId)
+        if (userIndex == -1) {
+            likeComment.numberOfLikes += 1
+            likeComment.likes.push(req.user.userId)
+        }
+        else {
+            likeComment.numberOfLikes -= 1
+            likeComment.likes.splice(userIndex, 1)
+        }
+        await likeComment.save()
+        res.status(200).json(likeComment)
+    } catch (error) {
+        next(error)
+    }
+}
+
+// The method comment.save() is used to save the changes made to the comment document in the database. Here's why this is necessary and why Comment.save() wouldn't work in this context:
+
+// Saving Changes to a Document:
+// When you modify a Mongoose document (like updating the numberOfLikes or modifying the likes array), those changes are only made in memory. To persist these changes to the database, you need to call the save() method on the document instance. This method ensures that the updated state of the document is written to the database.
+
+// Instance Method vs. Model Method:
+
+// comment.save(): This is an instance method called on a specific document instance. It saves the current state of that particular document to the database.
+// Comment.save(): This would imply calling save() on the Model itself, which is not valid. The save() method is meant to be called on document instances, not on the Model constructor. The Model (in this case, Comment) provides static methods to create, read, update, and delete documents, but it doesn't have a save() method applicable to the Model as a whole.
