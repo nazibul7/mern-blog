@@ -1,17 +1,14 @@
-
 import React, { useEffect, useState } from 'react'
 import moment from "moment"
 import { FaThumbsUp } from "react-icons/fa"
 import { useSelector } from 'react-redux'
 import { Button, Textarea } from 'flowbite-react'
 
-const Comment = ({ comment, onLike,onEdit }) => {
+const Comment = ({ comment, onLike, onEdit,onDelete }) => {
     const { currentUser } = useSelector(state => state.user)
     const [user, setUser] = useState({})
-    console.log(comment);
     const [isEditing, setIsEditing] = useState(false)
     const [editedContent, setEditedContent] = useState('')
-    console.log(editedContent);
     useEffect(() => {
         const getUser = async () => {
             try {
@@ -30,22 +27,22 @@ const Comment = ({ comment, onLike,onEdit }) => {
         setIsEditing(true)
         setEditedContent(comment.commentContent)
     }
-    const handleSave=async()=>{
+    const handleSave = async () => {
         try {
-            const res=await fetch(`/api/comment/editComment/${comment._id}`,{
-                method:"PUT",
-                headers:{
-                    'Content-Type':"application/json"
+            const res = await fetch(`/api/comment/editComment/${comment._id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': "application/json"
                 },
-                body:JSON.stringify({
-                    content:editedContent
+                body: JSON.stringify({
+                    content: editedContent
                 })
             })
-            const data=(await res.json());
+            const data = (await res.json());
             console.log(data);
-            if(res.ok){
+            if (res.ok) {
                 setIsEditing(false)
-                onEdit(comment,editedContent)
+                onEdit(comment, editedContent)
             }
         } catch (error) {
             console.log(error);
@@ -68,7 +65,7 @@ const Comment = ({ comment, onLike,onEdit }) => {
                             <Button onClick={handleSave} type='button' size={'xs'} gradientDuoTone={'purpleToBlue'}>
                                 Save
                             </Button>
-                            <Button onClick={()=>setIsEditing(false)} type='button' size={'xs'} gradientDuoTone={'purpleToBlue'} outline>
+                            <Button onClick={() => setIsEditing(false)} type='button' size={'xs'} gradientDuoTone={'purpleToBlue'} outline>
                                 Cancel
                             </Button>
                         </div>
@@ -92,9 +89,14 @@ const Comment = ({ comment, onLike,onEdit }) => {
                             {
                                 currentUser && (currentUser._id === comment.userId || currentUser.isAdmin) &&
                                 (
-                                    <button onClick={handleEdit} type='button' className='text-gray-400 hover:text-blue-500'>
-                                        Edit
-                                    </button>
+                                    <>
+                                        <button onClick={handleEdit} type='button' className='text-gray-400 hover:text-blue-500'>
+                                            Edit
+                                        </button>
+                                        <button onClick={()=>{onDelete(comment._id)}} type='button' className='text-gray-400 hover:text-red-500'>
+                                            Delete
+                                        </button>
+                                    </>
                                 )
                             }
                         </div>
