@@ -2,19 +2,20 @@ import { Button, Spinner } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 import { useParams,Link } from 'react-router-dom'
 import CommentSection from './CommentSection'
+import PostCard from '../components/PostCard'
 
 const PostPage = () => {
     const { postSlug } = useParams()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
     const [post, setPost] = useState(null)
+    const [recentPost,setrecentPost]=useState(null)
     useEffect(() => {
         const fetchPost = async () => {
             try {
                 setLoading(true)
                 const res = await fetch(`/api/post/getposts?slug=${postSlug}`)
                 const data = await res.json()
-                console.log(data.post[0]);
                 if (!res.ok) {
                     setError(true)
                     setLoading(false)
@@ -32,6 +33,20 @@ const PostPage = () => {
         }
         fetchPost()
     }, [postSlug])
+    useEffect(()=>{
+        const fetchRecentPost=async()=>{
+            try {
+                const res=await fetch(`/api/post/getposts?limit=3`)
+                const data=await res.json()
+                if(res.ok){
+                    setrecentPost(data.post)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchRecentPost()
+    },[])
     if (loading) return (
         <div className='flex items-center min-h-screen justify-center'>
             <Spinner size={'xl'} />
@@ -52,6 +67,19 @@ const PostPage = () => {
 
             </div>
             <CommentSection postId={post._id}/>
+
+           {/* ____________ Recent Articles___________ */}
+
+            <div className='flex flex-col mb-3 justify-center items-center'>
+                <h1 className='text-lg text-center'>Recent Articles</h1>
+                <div className='flex flex-wrap gap-3 mt-3 justify-center'>
+                    {recentPost && 
+                        recentPost.map((post)=>{
+                            return <PostCard key={post._id} post={post}/>
+                        })
+                    }
+                </div>
+            </div>
         </div>
     )
 }

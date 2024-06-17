@@ -85,7 +85,10 @@ const DashPosts = () => {
                         <img src={post.image} alt="" className='w-20 h-10 object-cover bg-gray-500' />
                       </Link>
                     </Table.Cell>
-                    <Table.Cell><Link to={`/post/${post.slug}`}>{post.title}</Link></Table.Cell>
+                    <Table.Cell>
+                      <Link to={`/post/${post.slug}`}>{post.title}
+                      </Link>
+                    </Table.Cell>
                     <Table.Cell>{post.category}</Table.Cell>
                     <Table.Cell>
                       <span onClick={() => {
