@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AiOutlineSearch } from "react-icons/ai"
 import { FaMoon, FaSun } from "react-icons/fa"
 import { useSelector, useDispatch } from "react-redux"
@@ -12,6 +12,7 @@ const Header = () => {
     const dispatch = useDispatch()
     const { currentUser } = useSelector(state => state.user)
     const { theme } = useSelector(state => state.theme)
+    const navigate=useNavigate()
     const handleSignOut = async () => {
         try {
             const res = await fetch(`/api/user/signout`, {
@@ -28,6 +29,22 @@ const Header = () => {
             console.log(error);
         }
     }
+    const [searchTerm, setSearchTerm] = useState('')
+    const location = useLocation()
+    useEffect(() => {
+        const urlParam = new URLSearchParams(location.search)
+        const searchtermFromUrl = urlParam.get('searchTerm')
+        if (searchtermFromUrl) {
+            setSearchTerm(searchtermFromUrl)
+        }
+    }, [location.search])
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        const urlParam = new URLSearchParams(location.search)
+        urlParam.set('searchTerm', searchTerm)
+        const searchQuery=urlParam.toString()
+        navigate(`/search?${searchQuery}`)
+    }
     return (
         <Navbar className='border-b-2'>
             <Link to={'/'} className='self-center whitespace-nowrap text-sm sm:text-xl
@@ -36,13 +53,15 @@ const Header = () => {
             via-purple-500 to-pink-500 rounded-lg text-white'>Nazibul's</span>
                 Blog
             </Link>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <TextInput type='text' placeholder='Search...'
                     rightIcon={AiOutlineSearch}
-                    className='hidden lg:inline'
+                    className='hidden md:inline'
+                    value={searchTerm}
+                    onChange={(e)=>setSearchTerm(e.target.value)}
                 />
             </form>
-            <Button className='w-12 h-9 lg:hidden' color='gray' pill>
+            <Button className='w-12 h-9 md:hidden' color='gray' pill>
                 <AiOutlineSearch />
             </Button>
             <div className='flex gap-2 '>
