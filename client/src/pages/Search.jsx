@@ -42,7 +42,6 @@ const Search = () => {
     }
     fetchPosts()
   }, [location.search])
-  console.log(sidebarData);
   const handleChange = (event) => {
     if (event.target.id == 'searchTerm') {
       setSidebarData({
