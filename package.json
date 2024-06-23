@@ -5,8 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "preinstall": "npm config set registry https://registry.npmjs.org/",
     "dev": "nodemon backend/index.js",
     "start": "node backend/index.js",
+    "prebuild":"npm config set registry https://registry.npmjs.org/",
     "build":"npm install && npm install --prefix client && npm run build --prefix client"
   },
   "keywords": [],
