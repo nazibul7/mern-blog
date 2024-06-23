@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import path from "path"
 
 dotenv.config()
-mongoose.connect(process.env.MONFODB_URI + '/mern-blog')
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log('MongoDB is connected');
     })

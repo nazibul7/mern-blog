@@ -19,7 +19,7 @@ const Home = () => {
     fetchPost()
   }, [])
   return (
-    <div>
+    <div className=''>
       <div className='flex flex-col gap-4 p-20 mx-auto max-w-3xl'>
         <h1 className='text-3xl font-bold lg:text-4xl'>Welcome to my Blog</h1>
         <p className='text-gray-500 text-xs sm:text-sm'>
