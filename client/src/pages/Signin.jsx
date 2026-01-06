@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { signInFailure, signInStart, signInSuccess } from '../redux/features/userSlice'
 import { useDispatch, useSelector } from "react-redux"
 import OAuth from "../components/OAuth"
+import BlogForgeLogo from '../components/BlogForgeLogo'
 
 const Signin = () => {
   const navigate = useNavigate()
@@ -46,8 +47,9 @@ const Signin = () => {
 
           {/* Left side - Brand */}
           <div className='flex-1 md:flex flex-col justify-center mb-8 md:mb-0 hidden'>
-            <Link to={'/'} className='text-3xl sm:text-4xl font-bold'>
-              <span className='px-2 py-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 transition-all'>
+            <Link to={'/'} className='flex items-center tracking-tight text-3xl sm:text-4xl font-bold'>
+              <BlogForgeLogo size='xl' showText={false} />
+              <span className='px-2 py-1 ml-[-15px] bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 transition-all'>
                 BlogForge
               </span>
             </Link>
